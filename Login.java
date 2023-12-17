@@ -1,81 +1,92 @@
-import java.sql.*;
-import javax.swing.*;
+import java.sql.*; // Imports the SQL package for database operations.
+import javax.swing.*; // Imports Swing components for the GUI.
 
-public class Login extends JFrame {
+public class Login extends JFrame { // Declares a class named Login that inherits from JFrame.
 
     // Components Declaration
-    private JPanel jPanel1;
-    private JLabel jLabel1;
-    private JLabel jLabel2;
-    private JTextField txtUser;
-    private JPasswordField txtPass;
-    private JButton btnLogin;
-    private JButton btnCancel;
+    private JPanel jPanel1; // Declares a JPanel to group other GUI components.
+    private JLabel jLabel1; // Declares a JLabel for displaying text for the username field.
+    private JLabel jLabel2; // Declares a JLabel for displaying text for the password field.
+    private JTextField txtUser; // Declares a JTextField for inputting the username.
+    private JPasswordField txtPass; // Declares a JPasswordField for inputting the password.
+    private JButton btnLogin; // Declares a JButton to trigger the login action.
+    private JButton btnCancel; // Declares a JButton to trigger the cancel action.
 
-    public Login() {
-        initComponents();
+    public Login() { // Constructor for the Login class.
+        initComponents(); // Calls the initComponents method to set up the GUI components.
     }
 
-    private void initComponents() {
+    private void initComponents() { // Method to initialize and configure the GUI components.
         // Component Initialization and Layout Code Here...
         // ...
 
         // Set Action Listeners for buttons
-        btnLogin.addActionListener(e -> loginAction());
-        btnCancel.addActionListener(e -> cancelAction());
+        btnLogin.addActionListener(e -> loginAction()); // Adds an action listener to the login button.
+        btnCancel.addActionListener(e -> cancelAction()); // Adds an action listener to the cancel button.
     }
 
-    private void loginAction() {
-        SwingWorker<Boolean, Void> worker = new SwingWorker<>() {
+    private void loginAction() { // Method that defines the login action.
+        SwingWorker<Boolean, Void> worker = new SwingWorker<>() { // Creates a new SwingWorker to perform background
+                                                                  // operations.
             @Override
-            protected Boolean doInBackground() throws Exception {
-                return authenticateUser(txtUser.getText(), new String(txtPass.getPassword()));
+            protected Boolean doInBackground() throws Exception { // The method that runs in the background thread.
+                return authenticateUser(txtUser.getText(), new String(txtPass.getPassword())); // Calls authenticateUser
+                                                                                               // with the username and
+                                                                                               // password.
             }
 
             @Override
-            protected void done() {
+            protected void done() { // This method is called when the background processing is complete.
                 try {
-                    if (get()) {
-                        MainMenu mainMenu = new MainMenu();
+                    if (get()) { // Checks the result of the doInBackground method.
+                        MainMenu mainMenu = new MainMenu(); // If successful, creates a new instance of MainMenu.
 
-                        Login.this.setVisible(false);
-                        mainMenu.setVisible(true);
+                        Login.this.setVisible(false); // Hides the Login window.
+                        mainMenu.setVisible(true); // Shows the MainMenu window.
                     } else {
-                        JOptionPane.showMessageDialog(Login.this, "Username and password do not match");
-                        txtUser.setText("");
-                        txtPass.setText("");
-                        txtUser.requestFocus();
+                        JOptionPane.showMessageDialog(Login.this, "Username and password do not match"); // Shows an
+                                                                                                         // error
+                                                                                                         // message.
+                        txtUser.setText(""); // Resets the username field.
+                        txtPass.setText(""); // Resets the password field.
+                        txtUser.requestFocus(); // Sets the focus back to the username field.
                     }
                 } catch (Exception e) {
-                    e.printStackTrace(); // Replace with better error handling
+                    e.printStackTrace(); // Prints the stack trace for any exceptions that occurred.
                 }
             }
         };
-        worker.execute();
+        worker.execute(); // Starts the SwingWorker by calling its execute method.
     }
 
-    private void cancelAction() {
+    private void cancelAction() { // Method that defines the cancel action.
         // Handle cancel action
     }
 
-    private boolean authenticateUser(String username, String password) {
-        String query = "SELECT * FROM user WHERE username = ? AND password = SHA2(?, 256)";
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost/customer", "root", "");
-                PreparedStatement pst = con.prepareStatement(query)) {
+    private boolean authenticateUser(String username, String password) { // Method to authenticate the user against the
+                                                                         // database.
+        String query = "SELECT * FROM user WHERE username = ? AND password = SHA2(?, 256)"; // SQL query to check
+                                                                                            // username and hashed
+                                                                                            // password.
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost/customer", "root", ""); // Establishes
+                                                                                                          // a database
+                                                                                                          // connection.
+                PreparedStatement pst = con.prepareStatement(query)) { // Prepares the SQL statement.
 
-            pst.setString(1, username);
-            pst.setString(2, password);
+            pst.setString(1, username); // Sets the username parameter in the SQL query.
+            pst.setString(2, password); // Sets the password parameter in the SQL query.
 
-            try (ResultSet rs = pst.executeQuery()) {
-                return rs.next();
+            try (ResultSet rs = pst.executeQuery()) { // Executes the query and gets the result set.
+                return rs.next(); // Returns true if the query found a match, otherwise false.
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Replace with better error handling
-            return false;
+            e.printStackTrace(); // Prints the stack trace for any SQL exceptions that occurred.
+            return false; // Returns false if an exception occurred.
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Login().setVisible(true));
+    public static void main(String[] args) { // The main method, the entry point of the application.
+        SwingUtilities.invokeLater(() -> new Login().setVisible(true)); // Ensures the GUI is created in the Event
+                                                                        // Dispatch Thread.
     }
 }
