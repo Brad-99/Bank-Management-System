@@ -19,10 +19,40 @@ public class Login extends JFrame { // Declares a class named Login that inherit
     private void initComponents() { // Method to initialize and configure the GUI components.
         // Component Initialization and Layout Code Here...
         // ...
+        jPanel1 = new JPanel();
+        jPanel1.setLayout(new BoxLayout(jPanel1, BoxLayout.Y_AXIS)); // Stack components vertically
+
+        // Initialize labels
+        jLabel1 = new JLabel("Username:");
+        jLabel2 = new JLabel("Password");
+
+        // Initialize text fields
+        txtUser = new JTextField(20); // Width of 20 columns
+        txtPass = new JPasswordField(20);
+
+        // Initialize buttons
+        btnLogin = new JButton("Login");
+        btnCancel = new JButton("Cancel");
+
+        // Add components to the panel
+        jPanel1.add(jLabel1);
+        jPanel1.add(txtUser);
+        jPanel1.add(jLabel2);
+        jPanel1.add(txtPass);
+        jPanel1.add(btnLogin);
+        jPanel1.add(btnCancel);
+
+        // Add the panel to the frame
+        this.add(jPanel1);
 
         // Set Action Listeners for buttons
         btnLogin.addActionListener(e -> loginAction()); // Adds an action listener to the login button.
         btnCancel.addActionListener(e -> cancelAction()); // Adds an action listener to the cancel button.
+
+        this.setTitle("Bank Management System - Login");
+        this.setSize(300, 200); // Set the initial size of the frame
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set the default close operation
+
     }
 
     private void loginAction() { // Method that defines the login action.
