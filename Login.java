@@ -1,5 +1,6 @@
 import java.sql.*; // Imports the SQL package for database operations.
 import javax.swing.*; // Imports Swing components for the GUI.
+import DatabaseConnector;
 
 public class Login extends JFrame { // Declares a class named Login that inherits from JFrame.
 
